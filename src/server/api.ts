@@ -1,7 +1,16 @@
 import axios, { AxiosInstance } from 'axios';
 
-// Create a custom Axios instance
+const getBaseUrl = (): string => {
+  if (typeof window === 'undefined') {
+    // Server-side
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  }
+  // Client-side
+  return window.location.origin;
+};
+
 const api: AxiosInstance = axios.create({
+  baseURL: getBaseUrl(),
   timeout: 10000, // 10 seconds
   headers: {
     'Content-Type': 'application/json',
@@ -9,9 +18,10 @@ const api: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor
 api.interceptors.request.use(
   (config) => {
+    config.baseURL = getBaseUrl();
+
     // You can modify the request config here
     // For example, add an auth token
     // const token = localStorage.getItem('token');
@@ -25,23 +35,16 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => {
-    // You can modify the response data here
     return response;
   },
   (error) => {
-    // Handle errors here
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       console.error('Response error:', error.response.data);
     } else if (error.request) {
-      // The request was made but no response was received
       console.error('Request error:', error.request);
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.error('Error:', error.message);
     }
     return Promise.reject(error);

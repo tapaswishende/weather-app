@@ -49,3 +49,9 @@ export type TForecast= {
 export type TWeatherForecast = TWeather & {
   forecast: TForecast
 }
+
+
+export type TTrackedCity = {
+  id: string,
+  name: string,
+}
