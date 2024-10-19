@@ -7,27 +7,30 @@ import { useRouter } from "next/navigation";
 
 export const WeatherCard: React.FC<{
   city: TWeatherLocation,
-  onRemove: (id: number) => void,
+  onRemove: (id: string) => void,
   current: TWeatherCurrent
 }> = ({
   city,
-  current
+  current,
+  onRemove
 }) => {
   const router = useRouter();
   return (
-    <Card>
+    <Card className='hover:bg-green-50 '>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{city.name}</CardTitle>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => null}
+          onClick={() => {
+            onRemove(city.name)
+          }}
           className="h-6 w-6"
         >
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <CardContent onClick={() => router.push(`/${city.name}`)}>
+      <CardContent onClick={() => router.push(`/${city.name}`)} className={'cursor-pointer'}>
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold">{current.temp_c}°C / {current.temp_f}°F</div>
           <div className="flex items-center space-x-2">

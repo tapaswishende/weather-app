@@ -1,6 +1,3 @@
-'use server';
-
-import { cities } from "@/server/constants/cities";
 import { TTrackedCity, TWeather } from "@/lib/types";
 import api from "@/server/api";
 import { z } from "zod";
@@ -30,6 +27,12 @@ const weatherResponseSchema = z.object({
     feelslike_f: z.number(),
   }),
 });
+export let cities: TTrackedCity[] = [
+  {
+    id: '1',
+    name: 'pune',
+  },
+]
 
 const weatherCache = new Map<string, { data: TWeather; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -156,3 +159,31 @@ export const addNewCityToTrack = async (city: string): Promise<void> => {
     throw error;
   }
 };
+
+
+export const removeCityFromTrack = async (cityId: string): Promise<void> => {
+  if (!cityId?.trim()) {
+    throw new Error('City ID is required');
+  }
+
+
+  console.log('here come');
+
+  try {
+    const cityIndex = cities.findIndex(city => city.id === cityId);
+
+    if (cityIndex === -1) {
+      throw new Error('City not found');
+    }
+
+    await new Promise<void>((resolve) =>
+      setTimeout(() => {
+        cities.splice(cityIndex, 1);
+        resolve();
+      }, 1000)
+    );
+  } catch (error: any) {
+    console.error('Error removing city:', error);
+    throw error;
+  }
+}

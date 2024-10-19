@@ -2,10 +2,11 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { TWeatherForecast } from "@/lib/types";
+import { TForecast, TWeatherForecast } from "@/lib/types";
 
 
-export const TemperatureChart: React.FC<TWeatherForecast> = ({ forecast }) => {
+export const TemperatureChart: React.FC<{forecast:TForecast}> = ({ forecast }) => {
+  console.log({ forecast });
   const chartData = forecast.forecastday.map(day => ({
     date: new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' }),
     temperature: day.day.avgtemp_c

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { TTrackedCity, TWeather } from "@/lib/types";
-import { addNewCityToTrack, getAllTrackedCity, getCityWeather } from "@/server/actions/city";
+import { addNewCityToTrack, getAllTrackedCity, getCityWeather, removeCityFromTrack } from "@/server/actions/city";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { WeatherCard } from "@/app/_components/weather-card";
@@ -131,18 +131,17 @@ export function WeatherDashboard() {
     return () => clearInterval(refreshInterval);
   }, [trackedCities]);
 
-  const removeCity = async (cityId: string) => {
-    try {
-      setTrackedCities(prev => prev.filter(city => city.id !== cityId));
+  const removeCity = async (cityName: string) => {
 
-      const cityToRemove = trackedCities.find(city => city.id === cityId);
-      if (cityToRemove) {
-        setWeatherData(prev => {
-          const newMap = new Map(prev);
-          newMap.delete(cityToRemove.name);
-          return newMap;
-        });
-      }
+    try {
+      // Call the API to remove the city
+      const cityId = trackedCities.find(city => city.name.toLowerCase() === cityName.toLowerCase())?.id;
+
+      await removeCityFromTrack(cityId?.toLowerCase()!);
+
+      console.log('here -> ');
+      // Update the state to remove the city locally
+      setTrackedCities(prev => prev.filter(city => city.id !== cityName));
 
       toast({
         title: "City removed",
@@ -157,6 +156,9 @@ export function WeatherDashboard() {
       getTrackedCities();
     }
   };
+
+
+  console.log("trackedCities", trackedCities);
 
   if (error) {
     return (
@@ -189,7 +191,7 @@ export function WeatherDashboard() {
                 <WeatherCard
                   city={weatherData.get(city.name)!?.location}
                   current={weatherData.get(city.name)!?.current}
-                  onRemove={() => removeCity(city.id)}
+                  onRemove={removeCity}
                 />
               )}
             </div>
