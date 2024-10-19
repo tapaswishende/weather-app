@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-const url = process.env.WEATHER_API_URL + '/search.json';
+const url = process.env.WEATHER_API_URL + '/current.json';
 
 export async function GET(
   req: NextRequest,
@@ -17,9 +17,9 @@ export async function GET(
 
 
     const response = await axios.get(url, { params: {
-      key: process.env.WETHER_API_KEY,
-      ...queryParams
-    } });
+        key: process.env.WETHER_API_KEY,
+        ...queryParams
+      } });
 
     console.log({ response: response.data });
 

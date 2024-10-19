@@ -4,20 +4,26 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { City } from "@/app/_components/weather-dashboard";
 import { WeatherIcon } from "@/app/_components/weather-icons";
+import { TWeatherCurrent, TWeatherLocation } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
-export const WeatherCard: React.FC<{ city: City, onRemove: (id: number) => void, key?: number }> = ({
+export const WeatherCard: React.FC<{
+  city: TWeatherLocation,
+  onRemove: (id: number) => void,
+  current: TWeatherCurrent
+}> = ({
   city,
-  onRemove,
-  key
+  current
 }) => {
+  const router = useRouter();
   return (
-    <Card>
+    <Card onClick={() => router.push(`/${city.name}`)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{city.name}</CardTitle>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => onRemove(city.id)}
+          onClick={() => null}
           className="h-6 w-6"
         >
           <X className="h-4 w-4" />
@@ -25,10 +31,10 @@ export const WeatherCard: React.FC<{ city: City, onRemove: (id: number) => void,
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold">{city.temp}°F</div>
+          <div className="text-2xl font-bold">{current.temp_f}°F</div>
           <div className="flex items-center space-x-2">
-            <span>{city.condition}</span>
-            <WeatherIcon condition={city.condition} />
+            {/*<span>{city.condition}</span>*/}
+            {/*<WeatherIcon condition={city.condition} />*/}
           </div>
         </div>
       </CardContent>
