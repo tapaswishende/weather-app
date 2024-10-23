@@ -19,12 +19,10 @@ const CitySkeleton = () => (
 );
 
 export function WeatherDashboard() {
-  const [isAddingCity, setIsAddingCity] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [weatherData, setWeatherData] = useState<Map<string, TWeather>>(new Map());
   const [trackedCities, setTrackedCities] = useState<TTrackedCity[]>([]);
-  const [refreshing, setRefreshing] = useState<Set<string>>(new Set());
   const [addingCityName, setAddingCityName] = useState<string | null>(null);
 
   const addCity = async (name: string) => {
@@ -39,7 +37,6 @@ export function WeatherDashboard() {
     }
 
     try {
-      setIsAddingCity(true);
       setAddingCityName(name); // Set the name of the city being added
       await addNewCityToTrack(name);
       await getTrackedCities(); // Refresh list after adding
@@ -59,15 +56,11 @@ export function WeatherDashboard() {
         description: errorMessage,
       });
     } finally {
-      setIsAddingCity(false);
       setAddingCityName(null); // Reset after adding is done
     }
   };
 
   const fetchCityWeather = async (city: string, silentUpdate = false) => {
-    if (!silentUpdate) {
-      setRefreshing(prev => new Set(prev).add(city));
-    }
 
     try {
       const data = await getCityWeather(city);
@@ -85,14 +78,6 @@ export function WeatherDashboard() {
         });
       }
       console.error(`Error fetching weather for ${city}:`, error);
-    } finally {
-      if (!silentUpdate) {
-        setRefreshing(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(city);
-          return newSet;
-        });
-      }
     }
   };
 

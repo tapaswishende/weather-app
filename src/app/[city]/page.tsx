@@ -6,12 +6,13 @@ import { Forecast } from "@/app/[city]/_components/forecast-day";
 import { TemperatureChart } from "@/app/[city]/_components/temperature-chart";
 import { useParams, useRouter } from "next/navigation";
 import { usePromise } from "@/lib/hook/use-promise";
-import { Button } from "@/components/ui/button";
 import { Loader2, MoveLeft } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
+
   const param = useParams();
+
   const { data, loading } = usePromise('weather-forecast', {
     'q': param.city as string,
     days: 7
